@@ -1,0 +1,11 @@
+﻿################################################################################
+# This .gitignore file was automatically created by Microsoft(R) Visual Studio.
+################################################################################
+
+/.vs/Splasher TAS Tools/v15
+/Game/bin
+/Game/obj
+*.user
+/Tools/bin
+/Tools/obj/Release
+/Tools/obj/Debug
