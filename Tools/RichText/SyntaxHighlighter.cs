@@ -190,7 +190,7 @@ namespace SplasherStudio.Controls {
 		void InitTASRegex() {
 			CommentRegex = new Regex(@"#.*$", RegexOptions.Multiline | RegexCompiledOption);
 			NumberRegex = new Regex(@"\b(\d+)\b(?<!,2)", RegexCompiledOption);
-			KeywordRegex = new Regex(@",\b(L|R|U|D|J|W|S|B|A|M|X)\b", RegexOptions.IgnoreCase | RegexCompiledOption);
+			KeywordRegex = new Regex(@",\b(L|R|U|D|J|W|G|B|A|S|X)\b", RegexOptions.IgnoreCase | RegexCompiledOption);
 			OtherRegex = new Regex(@"(,\d*)", RegexOptions.IgnoreCase | RegexCompiledOption);
 		}
 		public virtual void TASSyntaxHighlight(Range range) {
