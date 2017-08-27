@@ -28,7 +28,19 @@ ie) 123,R,J (For 123 frames, hold Right and Jump)
 - [ = Left Bumper
 - ] = Right Bumper
 
+## Playback / Recording of Input File
+While in game
+- Playback: Left Trigger + Right Trigger + Right Stick
+- Record: Left Trigger + RIght Trigger + Left Stick
+- Stop: Left Trigger + Right Trigger + DPad Down
+- Faster/Slower Playback: Right Stick X+/X-
+- Frame Step: DPad Up
+- While Frame Stepping:
+  - One more frame: DPad Up
+  - Continue at normal speed: DPad Down
+  - Frame step continuously: Right Stick X+
+
 ## Splasher Studio
-Can be used in stead of notepad or similar for easier editing of the TAS file. Is located in [Releases](https://github.com/ShootMe/SplasherTAS/releases) as well.
+Can be used instead of notepad or similar for easier editing of the TAS file. Is located in [Releases](https://github.com/ShootMe/SplasherTAS/releases) as well.
 
 If Splasher.exe is running it will automatically open Splasher.tas if it exists. You can hit Ctrl+O to open a different file, which will automatically save it to Splasher.tas as well. Ctrl+Shift+S will open a Save As dialog as well.
