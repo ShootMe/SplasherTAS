@@ -1,0 +1,201 @@
+#Restart Run
+   1,S
+   5
+   1,D
+   5
+   1,J
+   5
+   1,U
+   5
+   1,J
+ 104,R
+
+#Level 1 Start
+  13,R,J
+  44,R
+  13,R,J
+  44,R
+  12,R,J
+  29,R
+  13,R,J
+  37,R
+  13,R,J
+  57,R
+  12,R,J
+  43,R
+
+#Jump over Acid
+  13,R,J
+  44,R
+  13,R,J
+  44,R
+  13,R,J
+  34,R
+  13,R,J
+  34,R
+  13,R,J
+  36,R
+
+#Jump to Chkpnt
+  13,R,J
+  33,R
+  13,R,J
+  44,R
+  13,R,J
+  44,R
+  13,R,J
+  44,R
+  13,R,J
+  79,R
+  13,R,J
+  25,R
+   1,R,U
+
+#Jump over wall
+  13,R,J
+  32,R
+  13,R,J
+  44,R
+  10,R,J
+  50,R
+  13,R,J
+  34,R
+  13,R,J
+  34,R
+  13,R,J
+  34,R
+   1,R,J
+  31,R
+
+#Going down
+  24,L
+  14,R
+  10,R,J
+  42,R
+  13,R,J
+  44,R
+  12,R,J
+  43,R
+  10,R,J
+  46,R
+   1,R,J
+  37,R
+  13,R,J
+  12,R
+
+#Up wall
+  12,U
+  13,R,J
+  33,R
+   5,R,J
+ 141,R
+   1,R,J
+  15,R
+   6,R,J
+  74,R
+  13,R,J
+  46,R
+  13,R,J
+  16,R
+
+#Up wall
+  78,U
+  13,R,J
+  35,R
+  13,R,J
+  69,R
+   2,R,J
+  38,R
+  13,R,J
+  17,R
+
+#Up wall
+  40,U
+  13,L,J
+  32,L
+  23,U
+  13,L,J
+   9,L
+  21,U
+  13,R,J
+  35,R
+   1,R,J
+  37,R
+  11,R,J
+  32,R
+   8,R,J
+  29,R
+   8,R,J
+  69,R
+   1,R,J
+  12,R
+   1,R,J
+  37,R
+   7,R,J
+
+#Jump across
+  71,R
+  13,R,J
+  44,R
+  13,R,J
+  44,R
+   2,R,J
+ 291,R
+   1,R,J
+ 101,R
+  38,L
+ 433,R
+  38,L
+  76,R
+
+#Long Hallway
+  13,R,J
+  44,R
+  13,R,J
+  44,R
+  13,R,J
+  44,R
+  13,R,J
+  44,R
+   5,R,J
+
+#Cutscene
+ 660,R
+
+#Grab water
+  55,D
+  67,R,D
+  92,R
+  13,R,J
+  44,R
+  13,R,J
+ 161,R
+   8,R,W
+
+#Head to end
+  13,L
+  13,L,J
+  44,L
+  13,L,J
+  19,L
+   3,R
+   6
+ 138,R
+  75,W,A,130
+  10,R
+  10,R,J
+   3,R,J,W
+  22,R,W
+   8,R
+   1,L
+  13,R,J
+  18,R
+  22,W,A,80
+  13,R,J
+  44,R
+  13,R,J
+  44,R
+  13,R,J
+  44,R
+  13,R,J
+  37,R
