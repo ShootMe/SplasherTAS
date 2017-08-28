@@ -22,7 +22,7 @@ namespace SplasherStudio {
 
 		private List<InputRecord> Lines = new List<InputRecord>();
 		private SplasherMemory memory = new SplasherMemory();
-		private int totalFrames = 0;
+		private int totalFrames = 0, currentFrame = 0;
 		private bool updating = false;
 		private DateTime lastChanged = DateTime.MinValue;
 		public Studio() {
@@ -115,14 +115,23 @@ namespace SplasherStudio {
 						}
 					}
 
+					index = tas.IndexOf(':');
+					num = tas.Substring(index + 2, tas.IndexOf(')', index) - index - 2);
+					if (int.TryParse(num, out temp)) {
+						currentFrame = temp;
+					}
+
 					index = tas.IndexOf('(');
 					int index2 = tas.IndexOf(' ', index);
 					num = tas.Substring(index + 1, index2 - index - 1);
 					if (tasText.CurrentLineText != num) {
 						tasText.CurrentLineText = num;
 					}
-				} else if (tasText.CurrentLine >= 0) {
-					tasText.CurrentLine = -1;
+				} else {
+					currentFrame = 0;
+					if (tasText.CurrentLine >= 0) {
+						tasText.CurrentLine = -1;
+					}
 				}
 
 				UpdateStatusBar();
@@ -151,7 +160,7 @@ namespace SplasherStudio {
 		}
 		private void UpdateStatusBar() {
 			if (memory.IsHooked) {
-				lblStatus.Text = "F(" + totalFrames + ")(" + memory.ControlLock().ToString() + ")(" + memory.PlayerState().ToString() + ")\r\n" + memory.SceneName() + memory.PlayerPosition().ToString() + memory.PlayerVelocity().ToString();
+				lblStatus.Text = "F(" + (currentFrame > 0 ? currentFrame + "/" : "") + totalFrames + ")(" + memory.ControlLock().ToString() + ")(" + memory.PlayerState().ToString() + ")\r\n" + memory.PlayerPosition().ToString() + memory.PlayerVelocity().ToString();
 			} else {
 				lblStatus.Text = "F(" + totalFrames + ")\r\nSearching...";
 			}
