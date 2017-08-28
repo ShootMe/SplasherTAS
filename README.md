@@ -20,6 +20,7 @@ ie) 123,R,J (For 123 frames, hold Right and Jump)
 - U = Up
 - D = Down
 - J = Jump
+- A,# = Angle (A,0 = Up | A,90 = Right | A,180 = Down | A,270 = Left)
 - W = Shoot Water
 - G = Shoot Goo
 - B = Shoot Bouncy
