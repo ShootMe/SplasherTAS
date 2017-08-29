@@ -41,12 +41,6 @@ PlayerController
 	Update()
 		Added
 			TAS.Manager.UpdateInputs();
-	UpdateInputParameters()
-		Changed
-			'<= this.CD.JumpHoldDelay' to '< this.CD.JumpHoldDelay'
-	UpdateJump()
-		Changed
-			'<= this.CD.JumpHoldDelay' to '< this.CD.JumpHoldDelay'
 ---------------------------------------------------------------------------------
 UIScorePanel
 	Rankings_OnReceivedLeaderboardEvent(List<UserLeaderboardRank>)
