@@ -149,21 +149,21 @@ namespace TAS {
 				} else if (rightStickX <= 0.2) {
 					SetFrameRate();
 				} else if (rightStickX <= 0.3) {
-					SetFrameRate(75);
+					SetFrameRate(80);
 				} else if (rightStickX <= 0.4) {
-					SetFrameRate(90);
+					SetFrameRate(100);
 				} else if (rightStickX <= 0.5) {
-					SetFrameRate(105);
-				} else if (rightStickX <= 0.6) {
 					SetFrameRate(120);
+				} else if (rightStickX <= 0.6) {
+					SetFrameRate(140);
 				} else if (rightStickX <= 0.7) {
-					SetFrameRate(135);
+					SetFrameRate(160);
 				} else if (rightStickX <= 0.8) {
-					SetFrameRate(150);
-				} else if (rightStickX <= 0.9) {
-					SetFrameRate(165);
-				} else {
 					SetFrameRate(180);
+				} else if (rightStickX <= 0.9) {
+					SetFrameRate(200);
+				} else {
+					SetFrameRate(240);
 				}
 			} else {
 				SetFrameRate();
@@ -178,7 +178,7 @@ namespace TAS {
 			Application.targetFrameRate = newFrameRate;
 			Time.fixedDeltaTime = 1f / 60f;
 			Time.maximumDeltaTime = Time.fixedDeltaTime;
-			QualitySettings.vSyncCount = newFrameRate == 60 ? 1 : 0;
+			QualitySettings.vSyncCount = 0;
 		}
 		private static void FrameStepping() {
 			float rightStickX = (float)xbox.RightThumbStickX / 32768f;

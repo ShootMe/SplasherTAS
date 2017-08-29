@@ -1,0 +1,109 @@
+AnimatedHUDElement
+	Update()
+		Changed
+			Time.unscaledDeltaTime to Time.deltaTime
+---------------------------------------------------------------------------------
+ChronoHUD
+	DisplayDelta(Checkpoint,float)
+		if (ChronoHUD.elapsedTime == 0f) {
+			return;
+		}
+		int num = (GameManager.Mode != GameMode.TimeAttack) ? this.checkpointIndex : (this.checkpointIndex - 1);
+		TextMesh textMesh = UnityEngine.Object.Instantiate<TextMesh>(this.pbDeltaPrefab);
+		textMesh.transform.parent = base.transform;
+		textMesh.transform.localPosition = this.pbDeltaPrefab.transform.position + Vector3.down * (float)num * 0.7f;
+		textMesh.text = this.locaPBStr.GetString() + " " + ((delta == 0f) ? "" : ((delta > 0f) ? "+" : "-")) + GameData.FloatTimeToString(Mathf.Abs(delta));
+		textMesh.color = ((delta == 0f) ? Color.black : ((delta > 0f) ? Color.red : Color.green));
+		this.pbTexts.Add(textMesh);
+		if (checkpoint.visual) {
+			checkpoint.Arrow.sprite = ((delta > 0f) ? GameActor.GD.CheckpointData.badArrow : GameActor.GD.CheckpointData.goodArrow);
+		}
+	LateUpdate()
+		Changed
+			Time.unscaledDeltaTime to Time.deltaTime
+---------------------------------------------------------------------------------
+GameManager
+	SlowMotion - StateMachine - MoveNext()
+		Changed
+			Time.unscaledDeltaTime to Time.deltaTime
+---------------------------------------------------------------------------------
+HUD
+	Update()
+		Changed
+			Time.unscaledDeltaTime to Time.deltaTime
+	LoadSceneRitual - StateMachine - MoveNext()
+		Changed
+			'Time.timeScale = 0f' to 'Time.timeScale = 1f'
+			'this.$current = new WaitForSecondsRealTime(1f)' to 'this.$current = new WaitForSeconds(1f)'
+			Time.unscaledDeltaTime to Time.deltaTime
+---------------------------------------------------------------------------------
+PlayerController
+	Update()
+		Added
+			TAS.Manager.UpdateInputs();
+	UpdateInputParameters()
+		Changed
+			'<= this.CD.JumpHoldDelay' to '< this.CD.JumpHoldDelay'
+	UpdateJump()
+		Changed
+			'<= this.CD.JumpHoldDelay' to '< this.CD.JumpHoldDelay'
+---------------------------------------------------------------------------------
+UIScorePanel
+	Rankings_OnReceivedLeaderboardEvent(List<UserLeaderboardRank>)
+		Removed
+			if (this.score != -1 && this.score < lb[0].Score) {
+				Rankings.SubmitScoreForBoard(this.board + 30, this.score);
+			}
+---------------------------------------------------------------------------------
+TSKGames.Inputs.InputGamePadMgr
+	GetAxis(string)
+		Added
+			if (TAS.Manager.Running && !TAS.Manager.Recording) {
+				return TAS.Manager.GetAxis(AxisName);
+			}
+	GetAxisDown(string)
+		Added
+			if (TAS.Manager.Running && !TAS.Manager.Recording) {
+				return TAS.Manager.GetAxisDown(AxisName);
+			}
+	GetAxisDown2(string)
+		Added
+			if (TAS.Manager.Running && !TAS.Manager.Recording) {
+				return TAS.Manager.GetAxisDown(AxisName);
+			}
+	GetAxisRaw(string)
+		Added
+			if (TAS.Manager.Running && !TAS.Manager.Recording) {
+				return TAS.Manager.GetAxisRaw(AxisName);
+			}
+	GetButton(InputGamepadButton)
+		Added
+			if (TAS.Manager.Running && !TAS.Manager.Recording) {
+				return TAS.Manager.GetButton(button);
+			}
+	GetButtonDown(InputGamepadButton)
+		Added
+			if (TAS.Manager.Running && !TAS.Manager.Recording) {
+				return TAS.Manager.GetButtonDown(button);
+			}
+---------------------------------------------------------------------------------
+TSKGames.Leaderboards.Rankings
+	SteamLeaderboards_FoundLB(LeaderboardFindResult,bool)
+		Removed
+			SteamCore.SteamInterface.Stats.UploadLeaderboardScore(res.Leaderboard, LeaderboardUploadScoreMethod.ForceUpdate, Rankings._lastScore, new int[1]);
+---------------------------------------------------------------------------------
+TSKGames.Save.DataStore
+	Save(IGameSaveFile)
+		DataStore._lastIsAutoSave = false;
+		DataStore._lastSaveSlot = SaveFile.SlotID;
+		SaveFile.Write();
+		if (DataStore.OnGameSaved != null && DataStore.OnGameSaved.GetInvocationList().Length != 0) {
+			DataStore.OnGameSaved();
+		}
+	AutoSaveSilently(IGameSaveFile,string)
+		DataStore._lastIsAutoSave = true;
+		DataStore._lastAutoSaveName = AutoSaveFilename;
+		SaveFile.Write();
+		if (DataStore.OnAutosaveSaved != null && DataStore.OnAutosaveSaved.GetInvocationList().Length != 0) {
+			DataStore.OnAutosaveSaved();
+		}
