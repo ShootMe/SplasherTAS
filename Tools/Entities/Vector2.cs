@@ -7,7 +7,10 @@
 			Y = y;
 		}
 		public override string ToString() {
-			return "(" + X.ToString("0.00") + "," + Y.ToString("0.00") + ")";
+			return ToString(2);
+		}
+		public string ToString(int decimalPoints = 2) {
+			return "(" + X.ToString("0.".PadRight(decimalPoints + 2, '0')) + "," + Y.ToString("0.".PadRight(decimalPoints + 2, '0')) + ")";
 		}
 	}
 }

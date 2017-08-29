@@ -22,7 +22,7 @@ namespace SplasherStudio {
 
 		private List<InputRecord> Lines = new List<InputRecord>();
 		private SplasherMemory memory = new SplasherMemory();
-		private int totalFrames = 0, currentFrame = 0;
+		private int totalFrames = 0, currentFrame = 0, visibleDecimalPoints = 2, visibleWidthChange = 0;
 		private bool updating = false;
 		private DateTime lastChanged = DateTime.MinValue;
 		public Studio() {
@@ -38,6 +38,12 @@ namespace SplasherStudio {
 
 			DesktopLocation = new Point(RegRead("x", DesktopLocation.X), RegRead("y", DesktopLocation.Y));
 			Size = new Size(RegRead("w", Size.Width), RegRead("h", Size.Height));
+
+			string posVel = "0.0,0.0,0.0,0.0";
+			Size size = TextRenderer.MeasureText(posVel, lblStatus.Font);
+			posVel = "0.00,0.00,0.00,0.00";
+			Size size2 = TextRenderer.MeasureText(posVel, lblStatus.Font);
+			visibleWidthChange = size2.Width - size.Width + 24;
 		}
 		private void TASStudio_FormClosed(object sender, FormClosedEventArgs e) {
 			RegWrite("x", DesktopLocation.X); RegWrite("y", DesktopLocation.Y);
@@ -159,8 +165,17 @@ namespace SplasherStudio {
 			UpdateStatusBar();
 		}
 		private void UpdateStatusBar() {
+			string posVel = memory.PlayerPosition().ToString(visibleDecimalPoints) + memory.PlayerVelocity().ToString(visibleDecimalPoints);
+			Size size = TextRenderer.MeasureText(posVel, lblStatus.Font);
+			if (size.Width > Width - 24) {
+				if (visibleDecimalPoints > 1) {
+					visibleDecimalPoints--;
+				}
+			} else if (size.Width < Width - visibleWidthChange && visibleDecimalPoints < 6) {
+				visibleDecimalPoints++;
+			}
 			if (memory.IsHooked) {
-				lblStatus.Text = "F(" + (currentFrame > 0 ? currentFrame + "/" : "") + totalFrames + ")(" + memory.ControlLock().ToString() + ")(" + memory.PlayerState().ToString() + ")\r\n" + memory.PlayerPosition().ToString() + memory.PlayerVelocity().ToString();
+				lblStatus.Text = "F(" + (currentFrame > 0 ? currentFrame + "/" : "") + totalFrames + ")(" + memory.ControlLock().ToString() + ")(" + memory.PlayerState().ToString() + ")\r\n" + posVel;
 			} else {
 				lblStatus.Text = "F(" + totalFrames + ")\r\nSearching...";
 			}
