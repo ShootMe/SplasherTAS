@@ -13,7 +13,7 @@ ChronoHUD
 		textMesh.transform.parent = base.transform;
 		textMesh.transform.localPosition = this.pbDeltaPrefab.transform.position + Vector3.down * (float)num * 0.7f;
 		textMesh.text = this.locaPBStr.GetString() + " " + ((delta == 0f) ? "" : ((delta > 0f) ? "+" : "-")) + GameData.FloatTimeToString(Mathf.Abs(delta));
-		textMesh.color = ((delta == 0f) ? Color.black : ((delta > 0f) ? Color.red : Color.green));
+		textMesh.color = ((delta == 0f) ? Color.white : ((delta > 0f) ? Color.red : Color.green));
 		this.pbTexts.Add(textMesh);
 		if (checkpoint.visual) {
 			checkpoint.Arrow.sprite = ((delta > 0f) ? GameActor.GD.CheckpointData.badArrow : GameActor.GD.CheckpointData.goodArrow);
