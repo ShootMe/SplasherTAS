@@ -64,7 +64,6 @@ namespace TAS {
 			Current = new InputRecord();
 			frameToNext = 0;
 			inputs.Clear();
-			File.Delete(filePath);
 		}
 		public void PlaybackPlayer() {
 			if (inputIndex < inputs.Count && !Manager.IsLoading()) {
@@ -90,8 +89,8 @@ namespace TAS {
 				Current.Frames = currentFrame - Current.Frames;
 				inputIndex++;
 				if (Current.Frames != 0) {
-					using (FileStream fs = new FileStream(filePath, FileMode.OpenOrCreate, FileAccess.Write, FileShare.ReadWrite)) {
-						byte[] data = Encoding.ASCII.GetBytes(Current.ToString() + "\r\n");
+					byte[] data = Encoding.ASCII.GetBytes(Current.ToString() + "\r\n");
+					using (FileStream fs = new FileStream(filePath, inputIndex == 1 ? FileMode.Create : FileMode.OpenOrCreate, FileAccess.Write, FileShare.ReadWrite)) {
 						fs.Position = fs.Length;
 						fs.Write(data, 0, data.Length);
 						fs.Close();

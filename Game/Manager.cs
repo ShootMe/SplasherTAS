@@ -178,7 +178,7 @@ namespace TAS {
 			Application.targetFrameRate = newFrameRate;
 			Time.fixedDeltaTime = 1f / 60f;
 			Time.maximumDeltaTime = Time.fixedDeltaTime;
-			QualitySettings.vSyncCount = 0;
+			QualitySettings.vSyncCount = newFrameRate == 60 ? 1 : 0;
 		}
 		private static void FrameStepping() {
 			float rightStickX = (float)xbox.RightThumbStickX / 32768f;
@@ -269,7 +269,9 @@ namespace TAS {
 
 			if (xMax != 0 && yMax != 0) {
 				record.Actions |= Actions.Angle;
-				record.Angle = (int)(Math.Atan2(y, x) * 180 / Math.PI) + 180;
+				int angle = (int)(Math.Atan2(x, y) * 180 / Math.PI);
+				if (angle < 0) { angle += 360; }
+				record.Angle = angle;
 			} else if (xMax < 0) {
 				record.Actions |= Actions.Left;
 			} else if (xMax > 0) {
