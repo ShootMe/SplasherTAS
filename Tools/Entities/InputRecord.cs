@@ -19,6 +19,7 @@ namespace SplasherStudio.Entities {
 		Angle = 4096
 	}
 	public class InputRecord {
+		public static char Delimiter = ',';
 		public int Frames { get; set; }
 		public Actions Actions { get; set; }
 		public float Angle { get; set; }
@@ -31,7 +32,6 @@ namespace SplasherStudio.Entities {
 		}
 		public InputRecord(string line) {
 			Notes = string.Empty;
-			if (line.Length > 0 && line[0] == ',') { return; }
 
 			int index = 0;
 			Frames = ReadFrames(line, ref index);
@@ -127,8 +127,6 @@ namespace SplasherStudio.Entities {
 						foundDecimal = true;
 					} else if (c == '-') {
 						negative = true;
-					} else if (c != ' ' && c != ',') {
-						return angle;
 					}
 				} else if (char.IsDigit(c)) {
 					angle = angle * 10 + (c ^ 0x30);
@@ -154,19 +152,19 @@ namespace SplasherStudio.Entities {
 		}
 		public string ActionsToString() {
 			StringBuilder sb = new StringBuilder();
-			if (HasActions(Actions.Left)) { sb.Append(",L"); }
-			if (HasActions(Actions.Right)) { sb.Append(",R"); }
-			if (HasActions(Actions.Up)) { sb.Append(",U"); }
-			if (HasActions(Actions.Down)) { sb.Append(",D"); }
-			if (HasActions(Actions.Jump)) { sb.Append(",J"); }
-			if (HasActions(Actions.Water)) { sb.Append(",W"); }
-			if (HasActions(Actions.Goo)) { sb.Append(",G"); }
-			if (HasActions(Actions.Bouncy)) { sb.Append(",B"); }
-			if (HasActions(Actions.Start)) { sb.Append(",S"); }
-			if (HasActions(Actions.Select)) { sb.Append(",X"); }
-			if (HasActions(Actions.LeftBumper)) { sb.Append(",["); }
-			if (HasActions(Actions.RightBumper)) { sb.Append(",]"); }
-			if (HasActions(Actions.Angle)) { sb.Append(",A,").Append(Angle.ToString("0")); }
+			if (HasActions(Actions.Left)) { sb.Append(Delimiter).Append('L'); }
+			if (HasActions(Actions.Right)) { sb.Append(Delimiter).Append('R'); }
+			if (HasActions(Actions.Up)) { sb.Append(Delimiter).Append('U'); }
+			if (HasActions(Actions.Down)) { sb.Append(Delimiter).Append('D'); }
+			if (HasActions(Actions.Jump)) { sb.Append(Delimiter).Append('J'); }
+			if (HasActions(Actions.Water)) { sb.Append(Delimiter).Append('W'); }
+			if (HasActions(Actions.Goo)) { sb.Append(Delimiter).Append('G'); }
+			if (HasActions(Actions.Bouncy)) { sb.Append(Delimiter).Append('B'); }
+			if (HasActions(Actions.Start)) { sb.Append(Delimiter).Append('S'); }
+			if (HasActions(Actions.Select)) { sb.Append(Delimiter).Append('X'); }
+			if (HasActions(Actions.LeftBumper)) { sb.Append(Delimiter).Append('['); }
+			if (HasActions(Actions.RightBumper)) { sb.Append(Delimiter).Append(']'); }
+			if (HasActions(Actions.Angle)) { sb.Append(Delimiter).Append('A').Append(Delimiter).Append(Angle.ToString("0")); }
 			return sb.ToString();
 		}
 		public override bool Equals(object obj) {

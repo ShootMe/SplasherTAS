@@ -29,6 +29,7 @@ namespace SplasherStudio {
 			InitializeComponent();
 			Text = titleBarText;
 
+			InputRecord.Delimiter = (char)RegRead("delim", (int)',');
 			Lines.Add(new InputRecord(""));
 			EnableStudio(false);
 
@@ -46,10 +47,28 @@ namespace SplasherStudio {
 			visibleWidthChange = size2.Width - size.Width + 24;
 		}
 		private void TASStudio_FormClosed(object sender, FormClosedEventArgs e) {
+			RegWrite("delim", (int)InputRecord.Delimiter);
 			RegWrite("x", DesktopLocation.X); RegWrite("y", DesktopLocation.Y);
 			RegWrite("w", Size.Width); RegWrite("h", Size.Height);
 		}
-		private void TASStudio_KeyDown(object sender, KeyEventArgs e) {
+		private void Studio_Resize(object sender, EventArgs e) {
+			if (visibleWidthChange == 0) { return; }
+
+			int oldDecimalPoints = 0;
+			do {
+				oldDecimalPoints = visibleDecimalPoints;
+				string posVel = memory.PlayerPosition().ToString(visibleDecimalPoints) + memory.PlayerVelocity().ToString(visibleDecimalPoints);
+				Size size = TextRenderer.MeasureText(posVel, lblStatus.Font);
+				if (size.Width > Width - 24) {
+					if (visibleDecimalPoints > 1) {
+						visibleDecimalPoints--;
+					}
+				} else if (size.Width < Width - visibleWidthChange && visibleDecimalPoints < 6) {
+					visibleDecimalPoints++;
+				}
+			} while (oldDecimalPoints != visibleDecimalPoints);
+		}
+		private void Studio_KeyDown(object sender, KeyEventArgs e) {
 			try {
 				if (e.Modifiers == (Keys.Shift | Keys.Control) && e.KeyCode == Keys.S) {
 					tasText.SaveNewFile();
@@ -57,10 +76,70 @@ namespace SplasherStudio {
 					tasText.SaveFile();
 				} else if (e.Modifiers == Keys.Control && e.KeyCode == Keys.O) {
 					tasText.OpenFile();
+				} else if (e.Modifiers == Keys.Control && e.KeyCode == Keys.T) {
+					int height = statusBar.Height;
+					int increase = 18;
+					if (height == 44) {
+						statusBar.Height += increase;
+						tasText.Height -= increase;
+					} else {
+						statusBar.Height -= increase;
+						tasText.Height += increase;
+					}
+				} else if (e.Modifiers == Keys.Control && e.KeyCode == Keys.D) {
+					string newDelimiter = InputRecord.Delimiter.ToString();
+					if (ShowInputDialog("Choose delimiter", ref newDelimiter) == DialogResult.OK) {
+						InputRecord.Delimiter = newDelimiter[0];
+						tasText.ReloadFile();
+					}
 				}
 			} catch (Exception ex) {
 				MessageBox.Show(this, ex.ToString(), "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
 			}
+		}
+		private DialogResult ShowInputDialog(string title, ref string input) {
+			Size size = new Size(200, 70);
+			DialogResult result = DialogResult.Cancel;
+
+			using (Form inputBox = new Form()) {
+				inputBox.FormBorderStyle = FormBorderStyle.FixedDialog;
+				inputBox.ClientSize = size;
+				inputBox.Text = title;
+				inputBox.StartPosition = FormStartPosition.CenterParent;
+				inputBox.MinimizeBox = false;
+				inputBox.MaximizeBox = false;
+
+				TextBox textBox = new TextBox();
+				textBox.Size = new Size(size.Width - 10, 23);
+				textBox.Location = new Point(5, 5);
+				textBox.Font = tasText.Font;
+				textBox.Text = input;
+				textBox.MaxLength = 1;
+				inputBox.Controls.Add(textBox);
+
+				Button okButton = new Button();
+				okButton.DialogResult = DialogResult.OK;
+				okButton.Name = "okButton";
+				okButton.Size = new Size(75, 23);
+				okButton.Text = "&OK";
+				okButton.Location = new Point(size.Width - 80 - 80, 39);
+				inputBox.Controls.Add(okButton);
+
+				Button cancelButton = new Button();
+				cancelButton.DialogResult = DialogResult.Cancel;
+				cancelButton.Name = "cancelButton";
+				cancelButton.Size = new Size(75, 23);
+				cancelButton.Text = "&Cancel";
+				cancelButton.Location = new Point(size.Width - 80, 39);
+				inputBox.Controls.Add(cancelButton);
+
+				inputBox.AcceptButton = okButton;
+				inputBox.CancelButton = cancelButton;
+
+				result = inputBox.ShowDialog(this);
+				input = textBox.Text;
+			}
+			return result;
 		}
 		private void UpdateLoop() {
 			bool lastHooked = false;
@@ -83,7 +162,7 @@ namespace SplasherStudio {
 						UpdateValues();
 					}
 
-					Thread.Sleep(12);
+					Thread.Sleep(14);
 				} catch { }
 			}
 		}
@@ -165,16 +244,11 @@ namespace SplasherStudio {
 			UpdateStatusBar();
 		}
 		private void UpdateStatusBar() {
-			string posVel = memory.PlayerPosition().ToString(visibleDecimalPoints) + memory.PlayerVelocity().ToString(visibleDecimalPoints);
-			Size size = TextRenderer.MeasureText(posVel, lblStatus.Font);
-			if (size.Width > Width - 24) {
-				if (visibleDecimalPoints > 1) {
-					visibleDecimalPoints--;
-				}
-			} else if (size.Width < Width - visibleWidthChange && visibleDecimalPoints < 6) {
-				visibleDecimalPoints++;
-			}
 			if (memory.IsHooked) {
+				string posVel = memory.PlayerPosition().ToString(visibleDecimalPoints) + memory.PlayerVelocity().ToString(visibleDecimalPoints);
+				if (statusBar.Height != 44) {
+					posVel += "\r\nTime: " + memory.ElapsedTimeRaw().ToString("0.00000");
+				}
 				lblStatus.Text = "F(" + (currentFrame > 0 ? currentFrame + "/" : "") + totalFrames + ")(" + memory.ControlLock().ToString() + ")(" + memory.PlayerState().ToString() + ")\r\n" + posVel;
 			} else {
 				lblStatus.Text = "F(" + totalFrames + ")\r\nSearching...";
@@ -237,6 +311,10 @@ namespace SplasherStudio {
 			Lines.Clear();
 			totalFrames = 0;
 			UpdateStatusBar();
+		}
+		private void tasText_LineNeeded(object sender, LineNeededEventArgs e) {
+			InputRecord record = new InputRecord(e.SourceLineText);
+			e.DisplayedLineText = record.ToString();
 		}
 		private void tasText_FileOpened(object sender, EventArgs e) {
 			try {

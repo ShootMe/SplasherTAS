@@ -27,7 +27,6 @@ namespace TAS {
 		public InputRecord() { }
 		public InputRecord(int number, string line) {
 			Line = number;
-			if (line.Length > 0 && line[0] == ',') { return; }
 
 			int index = 0;
 			Frames = ReadFrames(line, ref index);
@@ -118,8 +117,6 @@ namespace TAS {
 						foundDecimal = true;
 					} else if (c == '-') {
 						negative = true;
-					} else if (c != ' ' && c != ',') {
-						return angle;
 					}
 				} else if (char.IsDigit(c)) {
 					angle = angle * 10 + (c ^ 0x30);

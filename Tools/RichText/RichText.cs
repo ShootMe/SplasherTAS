@@ -1177,6 +1177,9 @@ namespace SplasherStudio.Controls {
 		[Description("Occurs when line was inserted/added.")]
 		public event EventHandler<LineInsertedEventArgs> LineInserted;
 
+		[Browsable(true)]
+		[Description("Occurs when line was read in.")]
+		public event EventHandler<LineNeededEventArgs> LineNeeded;
 		/// <summary>
 		/// Occurs when line was removed
 		/// </summary>
@@ -1223,6 +1226,10 @@ namespace SplasherStudio.Controls {
 				ts.RecalcNeeded -= ts_RecalcNeeded;
 				ts.TextChanging -= ts_TextChanging;
 
+				FileTextSource fs = ts as FileTextSource;
+				if (fs != null) {
+					fs.LineNeeded -= ts_LineNeeded;
+				}
 				lines.Dispose();
 			}
 
@@ -1236,6 +1243,11 @@ namespace SplasherStudio.Controls {
 				ts.TextChanged += ts_TextChanged;
 				ts.RecalcNeeded += ts_RecalcNeeded;
 				ts.TextChanging += ts_TextChanging;
+				FileTextSource fs = ts as FileTextSource;
+				if (fs != null) {
+					fs.LineNeeded += ts_LineNeeded;
+				}
+
 				while (lineInfos.Count < ts.Count)
 					lineInfos.Add(new LineInfo(-1));
 			}
@@ -1293,6 +1305,9 @@ namespace SplasherStudio.Controls {
 			lineInfos.InsertRange(e.Index, temp);
 
 			OnLineInserted(e.Index, e.Count);
+		}
+		private void ts_LineNeeded(object sender, LineNeededEventArgs e) {
+			LineNeeded?.Invoke(sender, e);
 		}
 
 		/// <summary>
@@ -2018,6 +2033,11 @@ namespace SplasherStudio.Controls {
 					LastFileName = diag.FileName;
 					OpenBindingFile(diag.FileName, Encoding.ASCII);
 				}
+			}
+		}
+		public void ReloadFile() {
+			if (!string.IsNullOrEmpty(LastFileName)) {
+				OpenBindingFile(LastFileName, Encoding.ASCII);
 			}
 		}
 		public void SaveNewFile() {
@@ -4185,8 +4205,7 @@ window.status = ""#print"";
 		}
 
 		protected virtual void OnPaintLine(PaintLineEventArgs e) {
-			if (PaintLine != null)
-				PaintLine(this, e);
+			PaintLine?.Invoke(this, e);
 		}
 
 		internal void OnLineInserted(int index) {
@@ -4194,14 +4213,13 @@ window.status = ""#print"";
 		}
 
 		internal void OnLineInserted(int index, int count) {
-			if (LineInserted != null)
-				LineInserted(this, new LineInsertedEventArgs(index, count));
+			LineInserted?.Invoke(this, new LineInsertedEventArgs(index, count));
 		}
 
 		internal void OnLineRemoved(int index, int count, List<int> removedLineIds) {
-			if (count > 0)
-				if (LineRemoved != null)
-					LineRemoved(this, new LineRemovedEventArgs(index, count, removedLineIds));
+			if (count > 0) {
+				LineRemoved?.Invoke(this, new LineRemovedEventArgs(index, count, removedLineIds));
+			}
 		}
 
 		/// <summary>

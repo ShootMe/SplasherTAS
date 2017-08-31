@@ -46,7 +46,7 @@
 			this.lblStatus.Font = new System.Drawing.Font("Courier New", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.lblStatus.Name = "lblStatus";
 			this.lblStatus.Overflow = System.Windows.Forms.ToolStripItemOverflow.Never;
-			this.lblStatus.Size = new System.Drawing.Size(369, 39);
+			this.lblStatus.Size = new System.Drawing.Size(338, 39);
 			this.lblStatus.Spring = true;
 			this.lblStatus.Text = "Searching...";
 			this.lblStatus.TextAlign = System.Drawing.ContentAlignment.TopLeft;
@@ -86,6 +86,7 @@
 			this.tasText.FileOpening += new System.EventHandler(this.tasText_FileOpening);
 			this.tasText.FileOpened += new System.EventHandler(this.tasText_FileOpened);
 			this.tasText.LineInserted += new System.EventHandler<SplasherStudio.Controls.LineInsertedEventArgs>(this.tasText_LineInserted);
+			this.tasText.LineNeeded += new System.EventHandler<SplasherStudio.Controls.LineNeededEventArgs>(this.tasText_LineNeeded);
 			this.tasText.LineRemoved += new System.EventHandler<SplasherStudio.Controls.LineRemovedEventArgs>(this.tasText_LineRemoved);
 			// 
 			// Studio
@@ -102,7 +103,8 @@
 			this.StartPosition = System.Windows.Forms.FormStartPosition.Manual;
 			this.Text = "Studio";
 			this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.TASStudio_FormClosed);
-			this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.TASStudio_KeyDown);
+			this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.Studio_KeyDown);
+			this.Resize += new System.EventHandler(this.Studio_Resize);
 			this.statusBar.ResumeLayout(false);
 			this.statusBar.PerformLayout();
 			this.ResumeLayout(false);

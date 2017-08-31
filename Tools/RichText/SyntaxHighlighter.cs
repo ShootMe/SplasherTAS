@@ -185,25 +185,15 @@ namespace SplasherStudio.Controls {
 				range.SetFoldingMarkers(folding.startMarkerRegex, folding.finishMarkerRegex, folding.options);
 		}
 
-		Regex CommentRegex, NumberRegex, KeywordRegex, OtherRegex;
-
-		void InitTASRegex() {
-			CommentRegex = new Regex(@"#.*$", RegexOptions.Multiline | RegexCompiledOption);
-			NumberRegex = new Regex(@"\b(\d+)\b(?<!,2)", RegexCompiledOption);
-			KeywordRegex = new Regex(@",\b(L|R|U|D|J|W|G|B|A|S|X)\b", RegexOptions.IgnoreCase | RegexCompiledOption);
-			OtherRegex = new Regex(@"(,\d*)", RegexOptions.IgnoreCase | RegexCompiledOption);
-		}
 		public virtual void TASSyntaxHighlight(Range range) {
-			range.tb.CommentPrefix = "#";
-			range.tb.LeftBracket = '\x0';
-			range.tb.RightBracket = '\x0';
-			range.tb.LeftBracket2 = '\x0';
-			range.tb.RightBracket2 = '\x0';
+			RichText tb = range.tb;
+			tb.CommentPrefix = "#";
+			tb.LeftBracket = '\x0';
+			tb.RightBracket = '\x0';
+			tb.LeftBracket2 = '\x0';
+			tb.RightBracket2 = '\x0';
 			//clear style of changed range
-			range.ClearStyle(GrayStyle, GreenStyle, RedStyle, BlueStyle);
-
-			if (CommentRegex == null)
-				InitTASRegex();
+			range.ClearStyle(GrayStyle, GreenStyle, RedStyle, BlueStyle, PinkStyle);
 
 			int start = range.Start.iLine;
 			int end = range.End.iLine;
@@ -214,16 +204,33 @@ namespace SplasherStudio.Controls {
 			}
 
 			while (start <= end) {
-				Range r = new Range(range.tb, 0, start, range.tb[start].Count, start);
-				start++;
-				InputRecord input = new InputRecord(r.Text);
+				int charEnd = tb[start].Count;
+				Range line = new Range(tb, 0, start, charEnd, start);
+
+				InputRecord input = new InputRecord(line.Text);
 				if (input.Frames == 0 && input.Actions == Actions.None) {
-					r.SetStyle(GreenStyle);
+					line.SetStyle(GreenStyle);
 				} else {
-					r.SetStyle(GrayStyle, OtherRegex);
-					r.SetStyle(RedStyle, NumberRegex);
-					r.SetStyle(BlueStyle, KeywordRegex);
+					Range sub = new Range(tb, 0, start, 4, start);
+					sub.SetStyle(RedStyle);
+
+					int charStart = 4;
+					while (charStart < charEnd) {
+						sub = new Range(tb, charStart, start, charStart + 1, start);
+
+						if (char.IsDigit(tb[start][charStart].c)) {
+							sub.SetStyle(PinkStyle);
+						} else if ((charStart & 1) == 0) {
+							sub.SetStyle(GrayStyle);
+						} else {
+							sub.SetStyle(BlueStyle);
+						}
+
+						charStart++;
+					}
 				}
+
+				start++;
 			}
 		}
 

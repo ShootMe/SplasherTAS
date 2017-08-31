@@ -75,6 +75,10 @@ namespace SplasherStudio.Entities {
 			//ChronoHUD.elapsedTime
 			return (float)(int)(ChronoHUD.Read<float>(Program, 0x10) * 100f) / 100f;
 		}
+		public float ElapsedTimeRaw() {
+			//ChronoHUD.elapsedTime
+			return ChronoHUD.Read<float>(Program, 0x10);
+		}
 		public string TASOutput() {
 			return TAS.Read(Program, 0x20);
 		}
