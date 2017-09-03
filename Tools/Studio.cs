@@ -33,10 +33,6 @@ namespace SplasherStudio {
 			Lines.Add(new InputRecord(""));
 			EnableStudio(false);
 
-			Thread updateThread = new Thread(UpdateLoop);
-			updateThread.IsBackground = true;
-			updateThread.Start();
-
 			DesktopLocation = new Point(RegRead("x", DesktopLocation.X), RegRead("y", DesktopLocation.Y));
 			Size = new Size(RegRead("w", Size.Width), RegRead("h", Size.Height));
 
@@ -52,6 +48,11 @@ namespace SplasherStudio {
 			RegWrite("delim", (int)InputRecord.Delimiter);
 			RegWrite("x", DesktopLocation.X); RegWrite("y", DesktopLocation.Y);
 			RegWrite("w", Size.Width); RegWrite("h", Size.Height);
+		}
+		private void Studio_Shown(object sender, EventArgs e) {
+			Thread updateThread = new Thread(UpdateLoop);
+			updateThread.IsBackground = true;
+			updateThread.Start();
 		}
 		private void Studio_Resize(object sender, EventArgs e) {
 			if (visibleWidthChange == 0) { return; }

@@ -103,6 +103,7 @@
 			this.StartPosition = System.Windows.Forms.FormStartPosition.Manual;
 			this.Text = "Studio";
 			this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.TASStudio_FormClosed);
+			this.Shown += new System.EventHandler(this.Studio_Shown);
 			this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.Studio_KeyDown);
 			this.Resize += new System.EventHandler(this.Studio_Resize);
 			this.statusBar.ResumeLayout(false);
