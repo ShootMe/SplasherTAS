@@ -45,6 +45,8 @@ namespace SplasherStudio {
 			posVel = "0.00,0.00,0.00,0.00";
 			Size size2 = TextRenderer.MeasureText(posVel, lblStatus.Font);
 			visibleWidthChange = size2.Width - size.Width + 24;
+
+			DetermineDecimalPlaces();
 		}
 		private void TASStudio_FormClosed(object sender, FormClosedEventArgs e) {
 			RegWrite("delim", (int)InputRecord.Delimiter);
@@ -54,6 +56,9 @@ namespace SplasherStudio {
 		private void Studio_Resize(object sender, EventArgs e) {
 			if (visibleWidthChange == 0) { return; }
 
+			DetermineDecimalPlaces();
+		}
+		private void DetermineDecimalPlaces() {
 			int oldDecimalPoints = 0;
 			do {
 				oldDecimalPoints = visibleDecimalPoints;
