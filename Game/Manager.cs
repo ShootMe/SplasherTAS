@@ -326,6 +326,9 @@ namespace TAS {
 		}
 		private static void DisableRun() {
 			Running = false;
+			if (Recording) {
+				controller.WriteInputs();
+			}
 			Recording = false;
 			state &= ~State.Enable;
 			state &= ~State.FrameStep;

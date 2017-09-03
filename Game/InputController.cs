@@ -89,16 +89,21 @@ namespace TAS {
 				Current.Frames = currentFrame - Current.Frames;
 				inputIndex++;
 				if (Current.Frames != 0) {
-					byte[] data = Encoding.ASCII.GetBytes(Current.ToString() + "\r\n");
-					using (FileStream fs = new FileStream(filePath, inputIndex == 1 ? FileMode.Create : FileMode.OpenOrCreate, FileAccess.Write, FileShare.ReadWrite)) {
-						fs.Position = fs.Length;
-						fs.Write(data, 0, data.Length);
-						fs.Close();
-					}
+					inputs.Add(Current);
 				}
 				Current = input;
 			}
 			currentFrame++;
+		}
+		public void WriteInputs() {
+			using (FileStream fs = new FileStream(filePath, FileMode.Create, FileAccess.Write, FileShare.ReadWrite)) {
+				for (int i = 0; i < inputs.Count; i++) {
+					InputRecord record = inputs[i];
+					byte[] data = Encoding.ASCII.GetBytes(record.ToString() + "\r\n");
+					fs.Write(data, 0, data.Length);
+				}
+				fs.Close();
+			}
 		}
 		private void ReadFile() {
 			inputs.Clear();
