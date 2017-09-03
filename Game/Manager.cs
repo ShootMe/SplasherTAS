@@ -1,5 +1,6 @@
 ﻿using J2i.Net.XInputWrapper;
 using System;
+using System.Runtime.InteropServices;
 using System.Threading;
 using TSKGames.Inputs;
 using UnityEngine;
@@ -13,6 +14,8 @@ namespace TAS {
 		FrameStep = 4
 	}
 	public class Manager {
+		[DllImport("user32.dll", CharSet = CharSet.Auto, ExactSpelling = true)]
+		public static extern short GetAsyncKeyState(Keys vkey);
 		public static bool Running, Recording;
 		private static InputController controller;
 		private static State state, nextState;
@@ -26,11 +29,8 @@ namespace TAS {
 			XboxController.UpdateFrequency = 30;
 			XboxController.StartPolling();
 		}
-		public static void Main(string[] args) {
-			controller.ReloadPlayback();
-
-			Console.WriteLine("Finished");
-			Console.ReadLine();
+		private static bool IsKeyDown(Keys key) {
+			return (GetAsyncKeyState(key) & 32768) == 32768;
 		}
 		public static bool IsLoading() {
 			Scene scene = SceneManager.GetActiveScene();
@@ -129,6 +129,11 @@ namespace TAS {
 		private static void HandleFrameRates() {
 			if (HasFlag(state, State.Enable) && !HasFlag(state, State.FrameStep) && !HasFlag(state, State.Record)) {
 				float rightStickX = (float)xbox.RightThumbStickX / 32768f;
+				if (IsKeyDown(Keys.LShiftKey)) {
+					rightStickX = -0.65f;
+				} else if (IsKeyDown(Keys.RShiftKey)) {
+					rightStickX = 1f;
+				}
 
 				if (rightStickX <= -0.9) {
 					SetFrameRate(3);
@@ -181,18 +186,19 @@ namespace TAS {
 			QualitySettings.vSyncCount = newFrameRate == 60 ? 1 : 0;
 		}
 		private static void FrameStepping() {
-			float rightStickX = (float)xbox.RightThumbStickX / 32768f;
-			bool rightTrigger = xbox.RightTrigger == 255;
-			bool dpadUp = xbox.IsDPadUpPressed;
-			bool dpadDown = xbox.IsDPadDownPressed;
+			bool rightTrigger = xbox.RightTrigger >= 245;
+			bool dpadUp = xbox.IsDPadUpPressed || IsKeyDown(Keys.OemOpenBrackets);
 
-			if (HasFlag(state, State.Enable) && !HasFlag(state, State.Record) && (HasFlag(state, State.FrameStep) || dpadUp && !rightTrigger)) {
+			if (HasFlag(state, State.Enable) && !HasFlag(state, State.Record) && (HasFlag(state, State.FrameStep) || (dpadUp && !rightTrigger))) {
 				bool continueLoop = dpadUp;
 				while (HasFlag(state, State.Enable)) {
-					rightStickX = (float)xbox.RightThumbStickX / 32768f;
-					rightTrigger = xbox.RightTrigger == 255;
-					dpadUp = xbox.IsDPadUpPressed;
-					dpadDown = xbox.IsDPadDownPressed;
+					float rightStickX = (float)xbox.RightThumbStickX / 32768f;
+					if (IsKeyDown(Keys.RShiftKey)) {
+						rightStickX = 0.65f;
+					}
+					rightTrigger = xbox.RightTrigger >= 245;
+					dpadUp = xbox.IsDPadUpPressed || IsKeyDown(Keys.OemOpenBrackets);
+					bool dpadDown = xbox.IsDPadDownPressed || IsKeyDown(Keys.OemCloseBrackets);
 
 					CheckControls();
 					if (!continueLoop && ((dpadUp && !rightTrigger))) {
@@ -229,11 +235,14 @@ namespace TAS {
 			}
 		}
 		private static void CheckControls() {
-			bool leftStick = xbox.IsLeftStickPressed;
-			bool rightStick = xbox.IsRightStickPressed;
-			bool rightTrigger = xbox.RightTrigger >= 245;
-			bool leftTrigger = xbox.LeftTrigger >= 245;
-			bool dpadDown = xbox.IsDPadDownPressed;
+			bool openBracket = IsKeyDown(Keys.ControlKey) && IsKeyDown(Keys.OemOpenBrackets);
+			bool closeBrackets = IsKeyDown(Keys.ControlKey) && IsKeyDown(Keys.OemCloseBrackets);
+			bool backSpace = IsKeyDown(Keys.ControlKey) && IsKeyDown(Keys.Back);
+			bool leftStick = xbox.IsLeftStickPressed || backSpace;
+			bool rightStick = xbox.IsRightStickPressed || openBracket;
+			bool dpadDown = xbox.IsDPadDownPressed || closeBrackets;
+			bool rightTrigger = xbox.RightTrigger >= 245 || openBracket || closeBrackets || backSpace;
+			bool leftTrigger = xbox.LeftTrigger >= 245 || openBracket || closeBrackets || backSpace;
 
 			if (rightTrigger && leftTrigger) {
 				if (!HasFlag(state, State.Enable) && rightStick) {
