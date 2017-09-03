@@ -30,10 +30,11 @@ ie) 123,R,J (For 123 frames, hold Right and Jump)
 - ] = Right Bumper
 
 ## Playback / Recording of Input File
+### Controller
 While in game
 - Playback: Left Trigger + Right Trigger + Right Stick
-- Record: Left Trigger + RIght Trigger + Left Stick
 - Stop: Left Trigger + Right Trigger + DPad Down
+- Record: Left Trigger + RIght Trigger + Left Stick
 - Faster/Slower Playback: Right Stick X+/X-
 - Frame Step: DPad Up
 - While Frame Stepping:
@@ -41,6 +42,18 @@ While in game
   - Continue at normal speed: DPad Down
   - Frame step continuously: Right Stick X+
 
+### Keyboard
+While in game
+- Playback: Control + [
+- Stop: Control + ]
+- Record: Control + Backspace
+- Faster/Slower Playback: RightShift / LeftShift
+- Frame Step: [
+- While Frame Stepping:
+  - One more frame: [
+  - Continue at normal speed: ]
+  - Frame step continuously: RightShift
+  
 ## Splasher Studio
 Can be used instead of notepad or similar for easier editing of the TAS file. Is located in [Releases](https://github.com/ShootMe/SplasherTAS/releases) as well.
 
